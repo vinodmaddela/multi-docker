@@ -6,17 +6,12 @@ services:
     image: 'redis:latest'
   nginx:
     restart: always
-    depends_on:
-      - api
-      - client
-    build: 
+    build:
       dockerfile: Dockerfile.dev
       context: ./nginx
     ports:
-      - '4000:80'
+      - '3050:80'
   api:
-    depends_on:
-      - postgres
     build:
       dockerfile: Dockerfile.dev
       context: ./server
@@ -32,20 +27,19 @@ services:
       - PGPASSWORD=postgres_password
       - PGPORT=5432
   client:
-    build: 
+    build:
       dockerfile: Dockerfile.dev
       context: ./client
     volumes:
       - /app/node_modules
       - ./client:/app
   worker:
-    build: 
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    build:
       dockerfile: Dockerfile.dev
       context: ./worker
     volumes:
       - /app/node_modules
       - ./worker:/app
-    environment:
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      

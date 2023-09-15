@@ -13,8 +13,23 @@ after_success:
   - docker build -t vinodmaddela/multi-nginx ./nginx
   - docker build -t vinodmaddela/multi-server ./server
   - docker build -t vinodmaddela/multi-worker ./worker
+  # Log in to the docker CLI
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to docker hub
   - docker push vinodmaddela/multi-client
   - docker push vinodmaddela/multi-nginx
   - docker push vinodmaddela/multi-server
   - docker push vinodmaddela/multi-worker
+
+# deploy:
+#   provider: elasticbeanstalk
+#   region: us-west-1
+#   app: multi-docker
+#   env: MultiDocker-env
+#   bucket_name: elasticbeanstalk-us-west-1-306476627547
+#   bucket_path: docker-multi
+#   on:
+#     branch: master
+#   access_key_id: $AWS_ACCESS_KEY
+#   secret_access_key:
+#     secure: $AWS_SECRET_KEY
