@@ -3,9 +3,9 @@ services:
   - docker
 
 before_install:
-  - docker build -t vinodmaddela/react-test -f ./client/Dockerfile.dev
+  - docker build -t vinodmaddela/react-test -f ./client/Dockerfile.dev ./client
 
-scripts:
+script:
   - docker run vinodmaddela/react-test npm test -- --coverage
 
 after_success:
