@@ -1,0 +1,20 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t vinodmaddela/react-test -f ./client/Dockerfile.dev
+
+scripts:
+  - docker run vinodmaddela/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t vinodmaddela/multi-client ./client
+  - docker build -t vinodmaddela/multi-nginx ./nginx
+  - docker build -t vinodmaddela/multi-server ./server
+  - docker build -t vinodmaddela/multi-worker ./worker
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push vinodmaddela/multi-client
+  - docker push vinodmaddela/multi-nginx
+  - docker push vinodmaddela/multi-server
+  - docker push vinodmaddela/multi-worker
